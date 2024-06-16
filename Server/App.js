@@ -5,11 +5,14 @@ const bodyParser = require("body-parser");
 require("dotenv").config({ path: "Config/.env" });
 
 app.use(express.json());
+app.use("/", express.static("uploads"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //routes
-const user = require("./Routes/userRoute");
-app.use("/api/v2", user);
+const userRoute = require("./Routes/userRoute");
+const productRoute = require("./Routes/productRoute");
+app.use("/api/v2/users", userRoute);
+app.use("/api/v2/products", productRoute);
 
 //database connection
 const { connectDatabase } = require("./DB/database");

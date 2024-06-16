@@ -1,5 +1,4 @@
 module.exports = (theFunc) => (req, res, next) => {
-  console.log("hi")
   Promise.resolve(theFunc(req, res, next)).catch(next); //next means go to next middleware,there is no middlewares written then it goes node js middleware
 };
 

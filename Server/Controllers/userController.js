@@ -1,10 +1,11 @@
-const User = require("../Model/UserModel");
+const User = require("../Model/userModel");
 const ErrorHandler = require("../Utils/ErrorHandler");
 const catchAsyncErrors = require("../Middlewares/catchAsynErrors");
 const jwt = require("jsonwebtoken");
 const sendMail = require("../Utils/sendMail");
 const sendToken = require("../Utils/jwtToken");
 
+//signUp - post
 const register = catchAsyncErrors(async (req, res, next) => {
   const { name, email, password } = req.body;
   const userEmail = await User.findOne({ email });
@@ -42,6 +43,7 @@ const createActivationToken = (user, otp) => {
   });
 };
 
+//verify otp - post
 const verifyUser = catchAsyncErrors(async (req, res, next) => {
   const { otp, activationToken } = req.body;
 
@@ -67,6 +69,7 @@ const verifyUser = catchAsyncErrors(async (req, res, next) => {
   sendToken(user, 201, res);
 });
 
+//login - post
 const login = catchAsyncErrors(async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -89,6 +92,7 @@ const login = catchAsyncErrors(async (req, res, next) => {
   sendToken(user, 200, res);
 });
 
+//userProfile - get
 const myProfile = catchAsyncErrors(async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id);
