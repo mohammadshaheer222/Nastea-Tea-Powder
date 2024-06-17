@@ -62,4 +62,40 @@ const addToCart = catchAsyncErrors(async (req, res, next) => {
   }
 });
 
-module.exports = { addToCart };
+const getCart = catchAsyncErrors(async (req, res, next) => {
+  try {
+    const cart = await Cart.find({ user: req.user._id }).populate("product");
+
+    const sumOfQuantities = cart.reduce(
+      (total, item) => total + item.quantity,
+      0
+    );
+
+    let subTotal = 0;
+
+    cart.forEach((i) => {
+      const itemSubTotal = i.product.price * i.quantity;
+      subTotal += itemSubTotal;
+    });
+
+
+    res.status(200).json({ success: true, cart, subTotal, sumOfQuantities });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 500));
+  }
+});
+
+const removeFromCart = catchAsyncErrors(async(req, res, next) => {
+  try{
+    const cart = await Cart.findById(req.params.id);
+
+    await cart.deleteOne();
+
+    res.status(200).json({success: true, message: "Removed from cart"})
+
+  } catch(error) {
+    return next(new ErrorHandler(error.message, 500))
+  }
+})
+
+module.exports = { addToCart, getCart, removeFromCart };
